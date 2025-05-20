@@ -4,14 +4,26 @@ const scrapeSydneyCom = require('../scrapers/Sydneycom');
 const scrapeVividSydney = require('../scrapers/VividSydney');
 const Event = require('../models/Event');
 
+// Helper to filter out duplicates
+async function filterNewEvents(events) {
+  const links = events.map(e => e.event_link);
+  const existing = await Event.find({ event_link: { $in: links } }).select('event_link');
+  const existingLinks = new Set(existing.map(e => e.event_link));
+  return events.filter(e => !existingLinks.has(e.event_link));
+}
+
 router.get('/scrape/sydney-com', async (req, res) => {
   try {
     const eventData = await scrapeSydneyCom();
     if (!eventData || !eventData.length) {
       return res.status(404).json({ message: 'No event data found' });
     }
-    const savedEvents = await Event.insertMany(eventData);
-    res.status(201).json(savedEvents);
+    const newEvents = await filterNewEvents(eventData);
+    if (!newEvents.length) {
+      return res.status(200).json({ message: 'No new events to add', added: 0 });
+    }
+    const savedEvents = await Event.insertMany(newEvents);
+    res.status(201).json({ message: 'Events added', added: savedEvents.length, events: savedEvents });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -24,8 +36,12 @@ router.get('/scrape/vivid-sydney', async (req, res) => {
     if (!eventData || !eventData.length) {
       return res.status(404).json({ message: 'No event data found' });
     }
-    const savedEvents = await Event.insertMany(eventData);
-    res.status(201).json(savedEvents);
+    const newEvents = await filterNewEvents(eventData);
+    if (!newEvents.length) {
+      return res.status(200).json({ message: 'No new events to add', added: 0 });
+    }
+    const savedEvents = await Event.insertMany(newEvents);
+    res.status(201).json({ message: 'Events added', added: savedEvents.length, events: savedEvents });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

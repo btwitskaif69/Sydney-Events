@@ -8,8 +8,30 @@ const scrapeVividSydney = async () => {
 
   await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
 
-  // Wait for event cards to load
-  await page.waitForSelector('.gtm-search-results-event-tile-link', { timeout: 15000 });
+  // Infinite scroll logic: scroll until no new cards are loaded
+  let previousCount = 0;
+  let sameCountTimes = 0;
+  while (sameCountTimes < 5) { // Try 5 times with no new cards before stopping
+    const currentCount = await page.evaluate(() =>
+      document.querySelectorAll('.gtm-search-results-event-tile-link').length
+    );
+    // Scroll to bottom, then up a bit, then bottom again to trigger loading
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await new Promise(res => setTimeout(res, 1500));
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 500));
+    await new Promise(res => setTimeout(res, 500));
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await new Promise(res => setTimeout(res, 1500));
+    const newCount = await page.evaluate(() =>
+      document.querySelectorAll('.gtm-search-results-event-tile-link').length
+    );
+    if (newCount === currentCount && currentCount === previousCount) {
+      sameCountTimes++;
+    } else {
+      sameCountTimes = 0;
+    }
+    previousCount = newCount;
+  }
 
   // Scrape all event cards
   const events = await page.evaluate(() => {
@@ -66,7 +88,7 @@ const scrapeVividSydney = async () => {
 
 if (require.main === module) {
   scrapeVividSydney().then(events => {
-    console.log(events);
+    console.log(events.length, events);
   }).catch(err => {
     console.error('Error scraping events:', err);
   });

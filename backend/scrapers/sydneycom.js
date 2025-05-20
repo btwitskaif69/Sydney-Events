@@ -8,10 +8,30 @@ const scrapeSydneyCom = async () => {
 
   await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
 
-  // Wait for event cards to load
-  await page.waitForSelector('.tile__product-list', { timeout: 15000 });
+  // Infinite scroll logic
+  let previousHeight;
+  let reachedEnd = false;
+while (!reachedEnd) {
+  previousHeight = await page.evaluate('document.body.scrollHeight');
+  await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+  await new Promise(res => setTimeout(res, 2000)); // Wait for new events to load
 
-  // Scrape all event preview links from the main events page
+  // Try clicking "Load More" if it exists
+  try {
+    await page.click('.load-more__button');
+    await new Promise(res => setTimeout(res, 1500));
+  } catch (err) {
+    // Button not found or not clickable, ignore
+  }
+
+  // Check if more events loaded
+  const newHeight = await page.evaluate('document.body.scrollHeight');
+  if (newHeight === previousHeight) {
+    reachedEnd = true;
+  }
+}
+
+  // Now scrape all event cards
   const events = await page.evaluate(() => {
     const cards = document.querySelectorAll('.tile__product-list');
     const eventList = [];
