@@ -11,17 +11,19 @@ const scrapeVividSydney = async () => {
   // Infinite scroll logic: scroll until no new cards are loaded
   let previousCount = 0;
   let sameCountTimes = 0;
-  while (sameCountTimes < 5) { // Try 5 times with no new cards before stopping
+  let maxScrolls = 30; // Increase max scroll attempts
+  let scrolls = 0;
+  while (sameCountTimes < 7 && scrolls < maxScrolls) { // Try more times with no new cards before stopping
     const currentCount = await page.evaluate(() =>
       document.querySelectorAll('.gtm-search-results-event-tile-link').length
     );
     // Scroll to bottom, then up a bit, then bottom again to trigger loading
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await new Promise(res => setTimeout(res, 1500));
+    await new Promise(res => setTimeout(res, 2500)); // Increase wait time
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 500));
-    await new Promise(res => setTimeout(res, 500));
+    await new Promise(res => setTimeout(res, 1000)); // Increase wait time
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await new Promise(res => setTimeout(res, 1500));
+    await new Promise(res => setTimeout(res, 2500)); // Increase wait time
     const newCount = await page.evaluate(() =>
       document.querySelectorAll('.gtm-search-results-event-tile-link').length
     );
@@ -31,6 +33,7 @@ const scrapeVividSydney = async () => {
       sameCountTimes = 0;
     }
     previousCount = newCount;
+    scrolls++;
   }
 
   // Scrape all event cards
@@ -42,9 +45,29 @@ const scrapeVividSydney = async () => {
       // Event link
       const event_link = card.href.startsWith('http') ? card.href : `https://www.vividsydney.com${card.getAttribute('href')}`;
 
-      // Image URL
-      const image_url = card.querySelector('picture img')?.getAttribute('data-srcset') ||
-                        card.querySelector('picture img')?.getAttribute('src') || '';
+      // Image URL extraction from <picture><source data-srcset|srcset>
+      let image_url = '';
+      const picture = card.querySelector('picture');
+      if (picture) {
+        const source = picture.querySelector('source');
+        if (source) {
+          const srcset = source.getAttribute('data-srcset') || source.getAttribute('srcset') || '';
+          if (srcset) {
+            const urls = srcset.split(',').map(s => s.trim().split(' ')[0]);
+            image_url = urls[urls.length - 1] || '';
+            if (image_url && image_url.startsWith('/')) {
+              image_url = `https://www.vividsydney.com${image_url}`;
+            }
+          }
+        }
+      }
+      if (!image_url) {
+        // fallback to <img src>
+        image_url = picture?.querySelector('img')?.getAttribute('src') || '';
+        if (image_url && image_url.startsWith('/')) {
+          image_url = `https://www.vividsydney.com${image_url}`;
+        }
+      }
 
       // Title
       const title = card.querySelector('h3 span')?.innerText.trim() || '';
@@ -52,11 +75,11 @@ const scrapeVividSydney = async () => {
       // Date
       const date = card.querySelector('svg + p')?.innerText.trim() || '';
 
-      // Location
-      const location = card.querySelectorAll('.c022187 p')[1]?.innerText.trim() || '';
+       // Location (use .c022195 > p)
+  const location = card.querySelector('.c022195 p')?.innerText.trim() || '';
 
-      // Description
-      const description = card.querySelector('.c022178 p')?.innerText.trim() || '';
+  // Description (use .c022186 > p)
+  const description = card.querySelector('.c022186 p')?.innerText.trim() || '';
 
       // Price
       const price = card.querySelector('.c022183 p')?.innerText.trim() || '';

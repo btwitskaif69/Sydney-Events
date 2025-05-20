@@ -2,13 +2,23 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const eventRoutes = require('./routes/eventRoutes');
-const scrapeSydneyCom = require('./scrapers/Sydneycom');
+const scrapeSydneyCom = require('./scrapers/sydneycom');
 const scrapeVividSydney = require('./scrapers/VividSydney');
 const Event = require('./models/Event');
 const cron = require('node-cron');
+const cors = require('cors'); // Add this
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Parse allowed origins from .env
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : [];
+
+app.use(cors({
+  origin: allowedOrigins,
+}));
 
 app.use(express.json());
 app.use('/api/events', eventRoutes);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const scrapeSydneyCom = require('../scrapers/Sydneycom');
+const scrapeSydneyCom = require('../scrapers/sydneycom');
 const scrapeVividSydney = require('../scrapers/VividSydney');
 const Event = require('../models/Event');
 
@@ -42,6 +42,15 @@ router.get('/scrape/vivid-sydney', async (req, res) => {
     }
     const savedEvents = await Event.insertMany(newEvents);
     res.status(201).json({ message: 'Events added', added: savedEvents.length, events: savedEvents });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    const events = await Event.find().sort({ date: 1 });
+    res.json(events);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -1,22 +1,12 @@
-import React, { useState } from 'react'
-import EventsFilter from '@/components/EventsFilter'
+import React from 'react'
 import HeroSection from '@/components/HeroSection'
-import EventsGrid from '@/components/EventsGrid'
-import { events as allEvents, getEventCategories, filterEvents } from '@/lib/data'
+import EventCards from '@/components/EventCards'
 
 const Home = () => {
-  const [filteredEvents, setFilteredEvents] = useState(allEvents)
-  const [categories] = useState(getEventCategories(allEvents))
-
-  const handleFilterChange = (filters) => {
-    setFilteredEvents(filterEvents(allEvents, filters))
-  }
-
   return (
-    <div>
+        <div>
       <HeroSection />
-      <EventsFilter onFilterChange={handleFilterChange} categories={categories} />
-      <EventsGrid events={filteredEvents} />
+      <EventCards/>
     </div>
   )
 }
