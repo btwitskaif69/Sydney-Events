@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const EventCards = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
+    axios.get(`${API_BASE_URL}/api/events`)
+      .then(res => {
         console.log('Fetched events:', res.data);
         const data = Array.isArray(res.data) ? res.data : res.data.events;
         setEvents(data || []);
-      } catch (err) {
-        console.error('Error fetching events:', err);
-      } finally {
         setLoading(false);
-      }
-    };
-
-    fetchEvents();
+      })
+      .catch((err) => {
+        console.error('Error fetching events:', err);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) return <div className="text-center py-10">Loading events...</div>;
