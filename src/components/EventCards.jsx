@@ -6,18 +6,20 @@ const EventCards = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/events')
-      .then(res => {
-        console.log('Fetched events:', res.data); // Debug: see what you get
-        // If API returns { events: [...] }
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
+        console.log('Fetched events:', res.data);
         const data = Array.isArray(res.data) ? res.data : res.data.events;
         setEvents(data || []);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error('Error fetching events:', err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   if (loading) return <div className="text-center py-10">Loading events...</div>;
