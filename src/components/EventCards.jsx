@@ -31,6 +31,7 @@ if (selectedEvent) {
 }
 
   return (
+  <>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 md:p-8 lg:p-20">
       {events.map(event => (
         <div
@@ -50,7 +51,7 @@ if (selectedEvent) {
             <div className="flex items-center justify-between mt-auto">
               <span className="text-indigo-600 font-bold">{event.price || 'Free'}</span>
               <button
-                onClick={() => setSelectedEvent(event)} // Open Signin with the selected event
+                onClick={() => setSelectedEvent(event)}
                 className="text-white bg-indigo-500 hover:bg-indigo-600 px-3 py-1 rounded text-sm"
               >
                 View Event
@@ -72,7 +73,13 @@ if (selectedEvent) {
         </div>
       ))}
     </div>
-  );
+
+    {/* Signin modal popup */}
+    {selectedEvent && (
+      <Signin event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+    )}
+  </>
+);
 };
 
 export default EventCards;
