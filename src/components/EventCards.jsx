@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Signin from './Signin';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const EventCards = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null); // Track the selected event for Signin
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/events`)
@@ -22,6 +24,11 @@ const EventCards = () => {
   }, []);
 
   if (loading) return <div className="text-center py-10">Loading events...</div>;
+
+  // If an event is selected, show the Signin component
+if (selectedEvent) {
+  return <Signin event={selectedEvent} onClose={() => setSelectedEvent(null)} />;
+}
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 md:p-8 lg:p-20">
@@ -42,14 +49,12 @@ const EventCards = () => {
             <p className="text-gray-700 flex-1 mb-2 line-clamp-3">{event.description}</p>
             <div className="flex items-center justify-between mt-auto">
               <span className="text-indigo-600 font-bold">{event.price || 'Free'}</span>
-              <a
-                href={event.event_link}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setSelectedEvent(event)} // Open Signin with the selected event
                 className="text-white bg-indigo-500 hover:bg-indigo-600 px-3 py-1 rounded text-sm"
               >
                 View Event
-              </a>
+              </button>
             </div>
             {event.tags && event.tags.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1">

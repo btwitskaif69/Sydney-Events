@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const eventRoutes = require('./routes/eventRoutes');
-const scrapeSydneyCom = require('./scrapers/sydneycom');
+const scrapeSydneyCom = require('./scrapers/SydneyCom');
 const scrapeVividSydney = require('./scrapers/VividSydney');
 const Event = require('./models/Event');
 const cron = require('node-cron');
@@ -11,17 +11,29 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Use ALLOWED_ORIGINS from .env, fallback to FRONTEND_URL for backward compatibility
+// Use ALLOWED_ORIGINS from .env
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : (process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []);
+  : [];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
 }));
 
 app.use(express.json());
 app.use('/api/events', eventRoutes);
+
+
+const emailRoutes = require('./routes/emailRoutes');
+app.use('/api/emails', emailRoutes);
 
 // Helper to filter out duplicates
 async function filterNewEvents(events) {
