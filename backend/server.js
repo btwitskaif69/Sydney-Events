@@ -6,15 +6,15 @@ const scrapeSydneyCom = require('./scrapers/sydneycom');
 const scrapeVividSydney = require('./scrapers/VividSydney');
 const Event = require('./models/Event');
 const cron = require('node-cron');
-const cors = require('cors'); // Add this
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Parse allowed origins from .env
+// Use ALLOWED_ORIGINS from .env, fallback to FRONTEND_URL for backward compatibility
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : [];
+  : (process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []);
 
 app.use(cors({
   origin: allowedOrigins,
@@ -58,7 +58,7 @@ cron.schedule('0 3 * * *', async () => {
     console.error('Scheduled scrape failed:', err);
   }
 }, {
-  timezone: "Australia/Sydney" // Ensures 3am Sydney time
+  timezone: "Australia/Sydney"
 });
 
 mongoose.connect(process.env.MONGO_URI, {
