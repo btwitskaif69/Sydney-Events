@@ -9,18 +9,19 @@ const EventCards = () => {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/events`)
-      .then(res => {
-        const data = Array.isArray(res.data) ? res.data : res.data.events;
-        setEvents(data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching events:', err);
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  axios.get(`${API_BASE_URL}/api/events`)
+    .then(res => {
+      const data = Array.isArray(res.data) ? res.data : res.data.events;
+      console.log("Fetched events:", data);
+      setEvents(data || []);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error('Error fetching events:', err);
+      setLoading(false);
+    });
+}, []);
 
   if (!loading && events.length === 0) {
   return <div className="text-center py-10 text-gray-500">No events found.</div>;
