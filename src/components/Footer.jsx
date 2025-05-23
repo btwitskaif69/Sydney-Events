@@ -9,7 +9,7 @@ const Footer = () => {
         {/* Logo & Description */}
         <div>
            <img src={logo} alt="Sydney Events Logo" className="h-8 w-auto mr-2" />
-            <h2 className="text-xl font-bold text-indigo-600">Sydney Events</h2>
+            <h2 className="text-xl font-bold bg-gradient-to-b from-[#7C90FC] to-[#364FDA] bg-clip-text text-transparent">Sydney Events</h2>
           <p className="text-sm text-gray-600">
             Discover and attend the most exciting events in Sydney. Curated experiences,
             workshops, and more—all in one place.

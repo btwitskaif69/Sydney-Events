@@ -29,7 +29,7 @@ const HeroSection = () => {
         <p className="text-lg md:text-2xl mb-6">Your guide to the best events in Sydney — all in one place.</p>
         <a
           href="#events"
-          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition"
+          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition text-white"
         >
           Explore Events
         </a>
