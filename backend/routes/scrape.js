@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const scrapeSydneyCom = require('../scrapers/temp');
+const scrapeSydneyCom = require('../scrapers/SydneyCom');
 const scrapeVividSydney = require('../scrapers/VividSydney');
 
 router.get('/city-of-sydney', async (req, res) => {

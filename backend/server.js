@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const eventRoutes = require('./routes/eventRoutes');
-const scrapeSydneyCom = require('./scrapers/temp');
+const scrapeSydneyCom = require('./scrapers/SydneyCom');
 const scrapeVividSydney = require('./scrapers/VividSydney');
 const Event = require('./models/Event');
 const cron = require('node-cron');
