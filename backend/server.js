@@ -11,13 +11,12 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Use ALLOWED_ORIGINS from .env
-const FRONTEND_URL = process.env.FRONTEND_URL; // Default to Vercel URL
-const allowedOrigins = [FRONTEND_URL, 'http://localhost:5000']; // Add both URLs
+const FRONTEND_URL = process.env.FRONTEND_URL;
+const allowedOrigins = [FRONTEND_URL, 'http://localhost:5173']; // Corrected local origin
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) { // Allow if the origin is in the list or undefined (for non-browser requests)
+    if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -26,19 +25,13 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(function (req, res, next) {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
 app.use(express.json());
 app.use('/api/events', eventRoutes);
+
+
+app.get('/', (req, res) => {
+  res.send('Hello from Express on Vercel!');
+});
 
 
 const emailRoutes = require('./routes/emailRoutes');
