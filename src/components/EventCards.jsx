@@ -30,7 +30,7 @@ const EventCards = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6 md:p-8 lg:p-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6 md:p-8 lg:p-20 border-2 bg-red-500">
         {events.map(event => (
           <div
             key={event._id}
