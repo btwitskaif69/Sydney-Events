@@ -10,7 +10,7 @@ const EventCards = () => {
   const [selectedEvent, setSelectedEvent] = useState(null); // Track the selected event for Signin
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/events`)
+    axios.get(`${API_BASE_URL}/api/events`, { withCredentials: true })
       .then(res => {
         console.log('Fetched events:', res.data);
         const data = Array.isArray(res.data) ? res.data : res.data.events;
