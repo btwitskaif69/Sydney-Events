@@ -7,12 +7,13 @@ const API_BASE_URL = import.meta.env.VITE_APP_BACKEND_URL || 'http://localhost:5
 const EventCards = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState(null); // Track the selected event for Signin
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/events`|| 'http://localhost:5173', { withCredentials: true })
+    axios.get(`${API_BASE_URL}/api/events`, { 
+      withCredentials: true 
+    })
       .then(res => {
-        console.log('Fetched events:', res.data);
         const data = Array.isArray(res.data) ? res.data : res.data.events;
         setEvents(data || []);
         setLoading(false);

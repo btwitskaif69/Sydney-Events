@@ -15,13 +15,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const allowedOrigins = [FRONTEND_URL, 'http://localhost:5173']; // Corrected local origin
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true
 }));
 
