@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const scrapeSydneyCom = require('../scrapers/SydneyCom');
+const scrapeSydneyCom = require('../scrapers/temp');
 const scrapeVividSydney = require('../scrapers/VividSydney');
 const Event = require('../models/Event');
 
