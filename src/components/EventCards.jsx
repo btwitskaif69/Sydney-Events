@@ -2,30 +2,27 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Signin from './Signin';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_APP_BACKEND_URL || 'http://localhost:5000';
 
 const EventCards = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-useEffect(() => {
-  axios.get(`${API_BASE_URL}/api/events`)
-    .then(res => {
-      const data = Array.isArray(res.data) ? res.data : res.data.events;
-      console.log("Fetched events:", data);
-      setEvents(data || []);
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error('Error fetching events:', err);
-      setLoading(false);
-    });
-}, []);
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/api/events`)
+      .then(res => {
+        const data = Array.isArray(res.data) ? res.data : res.data.events;
+        setEvents(data || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching events:', err);
+        setLoading(false);
+      });
+  }, []);
 
-  if (!loading && events.length === 0) {
-  return <div className="text-center py-10 text-gray-500">No events found.</div>;
-}
+  if (loading) return <div className="text-center py-10 text-gray-500">Loading events...</div>;
 
   if (selectedEvent) {
     return <Signin event={selectedEvent} onClose={() => setSelectedEvent(null)} />;
@@ -42,7 +39,7 @@ useEffect(() => {
             <img
               src={event.image_url || 'https://via.placeholder.com/400x200?text=No+Image'}
               alt={event.title}
-              className="h-72 w-full object-cover"
+              className="h-52 w-full object-cover"
             />
             <div className="p-5 flex-1 flex flex-col">
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">{event.title}</h2>
