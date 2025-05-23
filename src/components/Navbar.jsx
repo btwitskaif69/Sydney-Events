@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link
 import {
   ResizableNavbar,
   NavBody,
@@ -11,7 +12,7 @@ import {
   MobileNavToggle,
   NavbarLogo,
   NavbarButton
-} from "@/components/ui/resizable-navbar"; // update with actual relative path
+} from "@/components/ui/resizable-navbar"; // Ensure this path is correct
 
 const navItems = [
   { name: "Home", link: "/" },
@@ -29,36 +30,32 @@ const Navbar = () => {
     <ResizableNavbar>
       {/* Desktop Navbar */}
       <NavBody>
-        <NavbarLogo />
-        {/*
-          Assuming NavItems also uses <a> tags internally or you'll modify it
-          to simply render <a> tags for its items.
-        */}
-        <NavItems items={navItems} onItemClick={closeMobileMenu} />
-        {/* NavbarButton uses href, which means it will act as a standard <a> tag */}
-        <NavbarButton href="/subscribe">Subscribe</NavbarButton>
+        <NavbarLogo /> {/* NavbarLogo will use Link internally */}
+        <NavItems items={navItems} onItemClick={closeMobileMenu} /> {/* NavItems will use Link internally */}
+        {/* Use 'as={Link}' and 'to' prop for NavbarButton navigation */}
+        <NavbarButton as={Link} to="/subscribe">Subscribe</NavbarButton>
       </NavBody>
 
       {/* Mobile Navbar */}
       <MobileNav>
         <MobileNavHeader>
-          <NavbarLogo />
+          <NavbarLogo /> {/* NavbarLogo will use Link internally */}
           <MobileNavToggle isOpen={mobileOpen} onClick={toggleMobileMenu} />
         </MobileNavHeader>
 
         <MobileNavMenu isOpen={mobileOpen} onClose={closeMobileMenu}>
           {navItems.map((item, idx) => (
-            <a // This is the <a> tag you requested
+            <Link // Use Link for mobile navigation items
               key={`mobile-link-${idx}`}
-              href={item.link} // The href attribute is used for the link destination
+              to={item.link} // Use 'to' prop
               onClick={closeMobileMenu}
               className="w-full px-4 py-2 text-lg text-black dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 rounded"
             >
               {item.name}
-            </a>
+            </Link>
           ))}
-          {/* NavbarButton uses href, which means it will act as a standard <a> tag */}
-          <NavbarButton href="/subscribe" className="w-full mt-4">
+          {/* Use 'as={Link}' and 'to' prop for NavbarButton in mobile menu */}
+          <NavbarButton as={Link} to="/subscribe" className="w-full mt-4">
             Subscribe
           </NavbarButton>
         </MobileNavMenu>

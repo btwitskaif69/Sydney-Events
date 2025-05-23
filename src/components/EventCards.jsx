@@ -39,7 +39,7 @@ const EventCards = () => {
             <img
               src={event.image_url || 'https://via.placeholder.com/400x200?text=No+Image'}
               alt={event.title}
-              className="h-52 w-full object-cover"
+              className="h-70 w-full object-cover"
             />
             <div className="p-5 flex-1 flex flex-col">
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">{event.title}</h2>

@@ -1,5 +1,5 @@
-"use client";;
-import { cn } from "@/lib/utils";
+"use client";
+import { cn } from "@/lib/utils"; // Ensure this path is correct
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import {
   motion,
@@ -8,9 +8,8 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 import React, { useRef, useState } from "react";
-import logo from "@/assets/logo.svg"; // update with actual relative path
-
-
+import logo from "@/assets/logo.svg"; // Ensure this path is correct
+import { Link } from "react-router-dom"; // Import Link
 
 export const ResizableNavbar = ({
   children,
@@ -35,11 +34,10 @@ export const ResizableNavbar = ({
     <motion.div
       ref={ref}
       className={cn(
-        "sticky inset-x-0 top-0 z-40 w-full py-4", // Increased padding-y to `py-6`
+        "sticky inset-x-0 top-0 z-40 w-full py-4",
         className
       )}
       style={{
-        // Add negative margin to compensate for any parent padding
         marginTop: '-1px',
       }}
     >
@@ -76,7 +74,7 @@ export const NavBody = ({
         minWidth: "800px",
       }}
       className={cn(
-        "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-4 lg:flex dark:bg-transparent", // Increased padding-y to `py-4`
+        "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-4 lg:flex dark:bg-transparent",
         visible && "bg-white/80 dark:bg-neutral-950/80",
         className
       )}
@@ -94,28 +92,35 @@ export const NavItems = ({
   const [hovered, setHovered] = useState(null);
 
   return (
-    (<motion.div
+    <motion.div
       onMouseLeave={() => setHovered(null)}
       className={cn(
+        // These classes are crucial for centering:
+        // absolute inset-0: Makes it fill the parent (NavBody).
+        // items-center justify-center: Center flex items (the Links).
+        // lg:flex: Makes it a flex container on large screens.
         "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
         className
-      )}>
+      )}
+    >
       {items.map((item, idx) => (
-        <a
+        <Link // Use Link component
+          to={item.link} // Use 'to' prop
           onMouseEnter={() => setHovered(idx)}
-          onClick={onItemClick}
+          onClick={onItemClick} // Propagates click for mobile menu closing
           className="relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
           key={`link-${idx}`}
-          href={item.link}>
+        >
           {hovered === idx && (
             <motion.div
               layoutId="hovered"
-              className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:bg-neutral-800" />
+              className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:bg-neutral-800"
+            />
           )}
           <span className="relative z-20">{item.name}</span>
-        </a>
+        </Link>
       ))}
-    </motion.div>)
+    </motion.div>
   );
 };
 
@@ -125,7 +130,7 @@ export const MobileNav = ({
   visible
 }) => {
   return (
-    (<motion.div
+    <motion.div
       animate={{
         backdropFilter: visible ? "blur(10px)" : "none",
         boxShadow: visible
@@ -134,7 +139,7 @@ export const MobileNav = ({
         width: visible ? "90%" : "100%",
         paddingRight: visible ? "12px" : "0px",
         paddingLeft: visible ? "12px" : "0px",
-        borderRadius: visible ? "4px" : "2rem",
+        borderRadius: visible ? "4px" : "2rem", // Note: original was "2rem", check if "4px" is desired for visible state
         y: visible ? 20 : 0,
       }}
       transition={{
@@ -146,9 +151,10 @@ export const MobileNav = ({
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
         visible && "bg-white/80 dark:bg-neutral-950/80",
         className
-      )}>
+      )}
+    >
       {children}
-    </motion.div>)
+    </motion.div>
   );
 };
 
@@ -157,10 +163,11 @@ export const MobileNavHeader = ({
   className
 }) => {
   return (
-    (<div
-      className={cn("flex w-full flex-row items-center justify-between", className)}>
+    <div
+      className={cn("flex w-full flex-row items-center justify-between", className)}
+    >
       {children}
-    </div>)
+    </div>
   );
 };
 
@@ -168,10 +175,10 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
-  onClose
+  onClose // onClose is passed but children are rendered directly in Navbar.js
 }) => {
   return (
-    (<AnimatePresence>
+    <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -180,11 +187,12 @@ export const MobileNavMenu = ({
           className={cn(
             "absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-white px-4 py-8 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset] dark:bg-neutral-950",
             className
-          )}>
+          )}
+        >
           {children}
         </motion.div>
       )}
-    </AnimatePresence>)
+    </AnimatePresence>
   );
 };
 
@@ -201,26 +209,29 @@ export const MobileNavToggle = ({
 
 export const NavbarLogo = () => {
   return (
-    (<a
-      href="/"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black">
+    <Link // Use Link for the logo
+      to="/" // Use 'to' prop
+      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+    >
       <img
-        src={logo}
+        src={logo} // Ensure 'logo' is correctly imported and resolved
         alt="logo"
         width={35}
-        height={35} />
+        height={35}
+      />
       <span className="font-semibold text-xl text-black dark:text-white">Sydney Events</span>
-    </a>)
+    </Link>
   );
 };
 
 export const NavbarButton = ({
-  href,
-  as: Tag = "a",
+  href,         // For external links when Tag is 'a'
+  to,           // For internal navigation when Tag is Link
+  as: Tag = "a", // Default to 'a', can be overridden with Link
   children,
   className,
   variant = "primary",
-  ...props
+  ...props      // Capture other props like onClick
 }) => {
   const baseStyles =
     "px-4 py-2 rounded-full bg-[#364FDA] text-white text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center";
@@ -228,18 +239,27 @@ export const NavbarButton = ({
   const variantStyles = {
     primary:
       "shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
-    secondary: "bg-transparent shadow-none dark:text-white",
+    secondary: "bg-transparent shadow-none dark:text-white", // Added dark:text-white for consistency from original if needed
     dark: "bg-black text-white shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
     gradient:
       "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
   };
 
+  const combinedClassName = cn(baseStyles, variantStyles[variant], className);
+
+  if (Tag === Link) {
+    // If 'as' is Link, use the 'to' prop. Fallback to 'href' if 'to' is not provided, or a sensible default.
+    return (
+      <Link to={to || href || "/"} className={combinedClassName} {...props}>
+        {children}
+      </Link>
+    );
+  }
+
+  // Otherwise, render the specified Tag (default 'a') with href
   return (
-    (<Tag
-      href={href || undefined}
-      className={cn(baseStyles, variantStyles[variant], className)}
-      {...props}>
+    <Tag href={href || to} className={combinedClassName} {...props}>
       {children}
-    </Tag>)
+    </Tag>
   );
 };
