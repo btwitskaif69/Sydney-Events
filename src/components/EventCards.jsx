@@ -22,7 +22,9 @@ const EventCards = () => {
       });
   }, []);
 
-  if (loading) return <div className="text-center py-10 text-gray-500">Loading events...</div>;
+  if (!loading && events.length === 0) {
+  return <div className="text-center py-10 text-gray-500">No events found.</div>;
+}
 
   if (selectedEvent) {
     return <Signin event={selectedEvent} onClose={() => setSelectedEvent(null)} />;
@@ -30,7 +32,7 @@ const EventCards = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6 md:p-8 lg:p-20 border-2 bg-red-500">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6 md:p-8 lg:p-20">
         {events.map(event => (
           <div
             key={event._id}
@@ -39,7 +41,7 @@ const EventCards = () => {
             <img
               src={event.image_url || 'https://via.placeholder.com/400x200?text=No+Image'}
               alt={event.title}
-              className="h-70 w-full object-cover"
+              className="h-72 w-full object-cover"
             />
             <div className="p-5 flex-1 flex flex-col">
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">{event.title}</h2>
