@@ -11,7 +11,7 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL; // Default to Vercel URL
-const allowedOrigins = [FRONTEND_URL, 'http://localhost:3000']; // Add both URLs
+const allowedOrigins = [FRONTEND_URL, 'http://localhost:5173']; // Add both URLs
 
 app.use(cors({
   origin: function (origin, callback) {
