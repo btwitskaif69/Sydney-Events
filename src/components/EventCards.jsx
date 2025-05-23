@@ -12,8 +12,10 @@ const EventCards = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
+    // Try to fetch events, log more info on error
     axios.get(`${API_BASE_URL}/api/events`, {
-      withCredentials: true,
+      // Remove withCredentials unless you are using cookies/auth
+      // withCredentials: true,
     })
     .then(res => {
       const data = Array.isArray(res.data)
@@ -23,7 +25,14 @@ const EventCards = () => {
       setLoading(false);
     })
     .catch(err => {
-      console.error('Error fetching events:', err);
+      // Log full error for debugging
+      if (err.response) {
+        console.error('Error fetching events:', err.response.status, err.response.data);
+      } else if (err.request) {
+        console.error('No response received:', err.request);
+      } else {
+        console.error('Error setting up request:', err.message);
+      }
       setLoading(false);
     });
   }, []);

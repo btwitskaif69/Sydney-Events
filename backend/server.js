@@ -26,6 +26,7 @@ if (!FRONTEND_URL) {
 const allowedOrigins = [
   FRONTEND_URL,
   'http://localhost:5173',
+  'https://sydney-events-finder.vercel.app'
 ].filter(Boolean);
 
 // -- 1) JSON parser (in case you need it in routes) --
@@ -33,7 +34,16 @@ app.use(express.json());
 
 // -- 2) CORS middleware --
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    // For debugging, log the rejected origin
+    console.log('Blocked by CORS:', origin);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 
