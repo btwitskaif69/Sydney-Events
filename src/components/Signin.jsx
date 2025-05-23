@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
 const Signin = ({ event, onClose }) => {
   const [email, setEmail] = useState('');
@@ -39,7 +39,7 @@ const Signin = ({ event, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50 p-10">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
         <button
           onClick={onClose}
