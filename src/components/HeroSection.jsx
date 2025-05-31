@@ -22,7 +22,7 @@ const HeroSection = () => {
       {/* Optional: dark overlay for text readability */}
       <div className="absolute inset-0" />
       <div className="relative z-10 flex flex-col items-center justify-center text-center text-black px-4 w-full h-full">
-        <h1 className="text-4xl md:text-7xl font-bold mb-4">Top Sydney events in one place.</h1>
+        <h1 className="text-4xl md:text-7xl font-bold mb-4">Top Sydney Events in one place.</h1>
         <h1 className='text-4xl md:text-7xl font-bold p-4 bg-gradient-to-b from-[#7C90FC] to-[#364FDA] bg-clip-text text-transparent'>
           Enter your email to get tickets.
         </h1>
